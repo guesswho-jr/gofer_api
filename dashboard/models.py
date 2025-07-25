@@ -28,4 +28,7 @@ class Product(models.Model):
         return True if self.product_original_price - self.discount_amount > 0 else False
     @property
     def vendor_image(self):
-        return self.user.profile.profile_picture.url
+        return self.user.profile.profile_picture.url # type: ignore
+    @property
+    def vendor(self):
+        return self.user.username

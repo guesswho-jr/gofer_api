@@ -19,30 +19,31 @@ def commonExceptions(exc, _):
         },status=status.HTTP_401_UNAUTHORIZED) 
     elif isinstance(exc, APIException):
         return Response({
-            "code": exc.default_code,
+            "error": True, "code": exc.default_code,
             "info": exc.detail
             
         })
     elif isinstance(exc, ValidationError):
         print(exc)
         return Response({
-            "code": "validation_error",
+            "error": True, "code": "validation_error",
             "info": "The information you submitted is not correct. If this issue persists report to us."
             
         })
     elif isinstance(exc, BadRequest):
         return Response({
-            "code": "bad_request",
+            "error": True, "code": "bad_request",
             "info": "The request you sent is not valid"
         },status=400)
     elif isinstance(exc, FieldDoesNotExist):
         return Response({
+            "error": True, 
             "code": "field_does_not_exist",
             "info": "The field you requested does not exist"
         },status=400)
     # else:
     #     return Response({
-    #         "code": "unknown",
+    #         "error": True, : "unknown",
     #         "info": ["Unknown error occured"],
     #         "debug": str(exc)
     #     })

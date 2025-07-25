@@ -9,7 +9,6 @@ class ProductSerializer(srl.ModelSerializer):
         fields = ["id",
                   "product_name",
                   "product_description",
-                  "user",
                   "product_initial_time",
                   "final_price",
                   "product_original_price",
@@ -17,7 +16,8 @@ class ProductSerializer(srl.ModelSerializer):
                   "is_discounted",
                   "product_image",
                   "product_badge",
-                  "vendor_image"
+                  "vendor_image",
+                  "vendor"
                   ]
 
 class ProductFormSerializer(Serializer):
