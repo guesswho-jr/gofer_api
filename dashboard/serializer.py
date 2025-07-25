@@ -1,4 +1,4 @@
-from adrf.serializers import ModelSerializer, Serializer
+from adrf.serializers import Serializer
 from rest_framework import serializers as srl
 from utils.log import logger
 from .models import Product
