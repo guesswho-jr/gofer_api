@@ -11,7 +11,7 @@ class AuthorizationHeaderCheck:
                 if 'HTTP_AUTHORIZATION' not in request.META:
                     return JsonResponse({
                         "info": [
-                            "Required header not set",
+                            "Required headers not set",
                         ]
                     }, status=400)
         # pass

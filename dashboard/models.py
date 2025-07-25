@@ -28,10 +28,10 @@ class Product(models.Model):
     @property
     def is_discounted(self):
         return True if self.product_original_price - self.discount_amount > 0 else False
-    @property
-    def vendor_image(self):
-        print(self.user)
-        up = UserProfile(user=self.user)
-        print(up.profile_picture)
-        print("----")
-        # return up.profile_picture
+    # @property
+    # def vendor_image(self):
+    #     print(self.user)
+    #     up = UserProfile(user=self.user)
+    #     print(up.profile_picture)
+    #     print("----")
+    #     # return up.profile_picture

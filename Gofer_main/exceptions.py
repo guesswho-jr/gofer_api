@@ -14,7 +14,7 @@ def commonExceptions(exc, _):
     elif isinstance(exc, InvalidToken):
         return Response({
             "info": [
-                "Your session is invalid or expired"
+                "Your token is invalid or expired"
             ]
         },status=status.HTTP_401_UNAUTHORIZED) 
     elif isinstance(exc, APIException):
