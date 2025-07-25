@@ -5,7 +5,7 @@ from .models import UserProfile
 
 User = get_user_model()
 @receiver(post_save, sender=User)
-async def create_or_update_user(sender, instance, created, **kwargs):
+def create_or_update_user_profile(sender, instance, created, **kwargs):
     if created:
         UserProfile.objects.create(user=instance)
     else:

@@ -17,7 +17,7 @@ class ProductSerializer(srl.ModelSerializer):
                   "is_discounted",
                   "product_image",
                   "product_badge",
-                #   "vendor_image"
+                  "vendor_image"
                   ]
 
 class ProductFormSerializer(Serializer):

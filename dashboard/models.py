@@ -2,8 +2,6 @@ from decimal import Decimal
 import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from accounts.models import UserProfile
-from asgiref.sync import sync_to_async
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -30,8 +28,4 @@ class Product(models.Model):
         return True if self.product_original_price - self.discount_amount > 0 else False
     @property
     def vendor_image(self):
-        print(self.user)
-        up = UserProfile(user=self.user)
-        print(up.profile_picture)
-        print("----")
-        # return up.profile_picture
+        return self.user.profile.profile_picture.url
