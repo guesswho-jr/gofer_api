@@ -1,7 +1,6 @@
 from rest_framework.serializers import Serializer, ModelSerializer
 from rest_framework import serializers 
 from Gofer_main.exception_classes import UnknownException
-from utils.log import logger
 from .models import Product, User
 from rest_framework.exceptions import ValidationError
 
@@ -19,7 +18,8 @@ class ProductSerializer(ModelSerializer):
                   "product_badge",
                   "vendor_image",
                   "vendor",
-                  "full_name"
+                  "full_name",
+                  "image"
                   ]
 
 
