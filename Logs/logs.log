@@ -1,1 +1,22 @@
 gofer CRITICAL Unknown error occured at accounts.auth_utils 'profile_picture'
+gofer CRITICAL Unknown error occured Got AttributeError when attempting to get a value for field `product_name` on serializer `ProductCreateSerializer`.
+The serializer field might be named incorrectly and not match any attribute or key on the `ValidationError` instance.
+Original exception text was: 'ValidationError' object has no attribute 'product_name'.
+gofer CRITICAL Unknown error occured Got AttributeError when attempting to get a value for field `product_name` on serializer `ProductCreateSerializer`.
+The serializer field might be named incorrectly and not match any attribute or key on the `ValidationError` instance.
+Original exception text was: 'ValidationError' object has no attribute 'product_name'.
+gofer CRITICAL Unknown error occured Got AttributeError when attempting to get a value for field `product_name` on serializer `ProductCreateSerializer`.
+The serializer field might be named incorrectly and not match any attribute or key on the `ValidationError` instance.
+Original exception text was: 'ValidationError' object has no attribute 'product_name'.
+gofer CRITICAL Unknown error occured Got AttributeError when attempting to get a value for field `product_name` on serializer `ProductCreateSerializer`.
+The serializer field might be named incorrectly and not match any attribute or key on the `ValidationError` instance.
+Original exception text was: 'ValidationError' object has no attribute 'product_name'.
+gofer CRITICAL Unknown error occured Got AttributeError when attempting to get a value for field `product_name` on serializer `ProductCreateSerializer`.
+The serializer field might be named incorrectly and not match any attribute or key on the `ValidationError` instance.
+Original exception text was: 'ValidationError' object has no attribute 'product_name'.
+gofer CRITICAL Unknown error occured Got AttributeError when attempting to get a value for field `product_name` on serializer `ProductCreateSerializer`.
+The serializer field might be named incorrectly and not match any attribute or key on the `ValidationError` instance.
+Original exception text was: 'ValidationError' object has no attribute 'product_name'.
+gofer CRITICAL Unknown error occured Got AttributeError when attempting to get a value for field `product_name` on serializer `ProductCreateSerializer`.
+The serializer field might be named incorrectly and not match any attribute or key on the `ValidationError` instance.
+Original exception text was: 'ValidationError' object has no attribute 'product_name'.

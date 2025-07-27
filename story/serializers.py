@@ -1,14 +1,14 @@
-from adrf.serializers import ModelSerializer, Serializer
-from rest_framework import serializers as srl
+from rest_framework.serializers import ModelSerializer
 from .models import Story
 
 class StorySerializer(ModelSerializer):
     class Meta:
         model = Story
         fields = [
-    "id",
-    "upload_date",
-    "uploaded_by",
-    "caption",
-    "image"
+            "story_image",
+            "id",
+            "caption",
+            "posted_at",
+            "posted_by"
         ]
+        

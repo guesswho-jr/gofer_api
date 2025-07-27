@@ -11,7 +11,7 @@ from django.contrib.auth.validators import UnicodeUsernameValidator
 import re
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from utils.log import logger
-from .models import UserProfile
+from Gofer_main.exception_classes import UnknownException
 from rest_framework.parsers import MultiPartParser, FormParser, FileUploadParser
 
 
@@ -47,8 +47,7 @@ async def registerView(request):
             return Response({"info": ["Username is not valid"]})
         
         except Exception as e:
-            logger.critical(f"Unknown error occured at {__name__} {e}")
-            return Response({"info":["Unknown error occured on username"]})
+            raise UnknownException(e)
         #---------------------------------------------------------------
         if not (re.match(NAME_REGEX, data["last_name"]) and re.match(NAME_REGEX, data["first_name"])):
             return Response({"info": ["Your name is not valid"]})
@@ -68,8 +67,7 @@ async def registerView(request):
         except IntegrityError:
             return Response({"info": ["Already signed up"]}, status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
-            logger.critical(f"Unknown error occured at {__name__} {e}")
-            return Response({"info": "Unknown Error occured"})
+           raise UnknownException(e)
         return Response({"success":True}, status.HTTP_201_CREATED)
         
     else:
@@ -89,8 +87,7 @@ async def loginView(request):
         except ValidationError:
             return Response({"info":[ "The data you provided is not valid"]}, status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
-            logger.critical(f"Unknown error occured at {__name__} {e}")
-            return Response({"info":["Unknown error occured on username"]})
+            raise UnknownException(e)
         
         user = await sync_to_async(authenticate)(username=username, password=password)
         if user:
