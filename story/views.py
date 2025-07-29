@@ -3,13 +3,14 @@ from rest_framework import generics
 from story.serializers import StorySerializer
 
 from .models import Story
+from django.utils import timezone
 
 class StoryListView(generics.ListAPIView):
-    queryset = Story.objects.all()
+    queryset = Story.objects.filter(created_at__gt = timezone.now() - timezone.timedelta(days=1))
     serializer_class = StorySerializer
     
 class StoryRetrieveView(generics.RetrieveAPIView):
-    queryset = Story.objects.all()
+    queryset = Story.objects.filter(created_at__gt = timezone.now() - timezone.timedelta(days=1))
     serializer_class = StorySerializer
     lookup_field = 'id'
 
