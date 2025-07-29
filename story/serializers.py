@@ -9,6 +9,7 @@ class StorySerializer(ModelSerializer):
             "id",
             "caption",
             "posted_at",
-            "posted_by"
+            "posted_by",
+            "poster_image"
         ]
         

@@ -22,6 +22,9 @@ class Story(models.Model):
     @property
     def story_image(self):
         return self.image.url
+    @property
+    def poster_image(self):
+        return self.uploaded_by.profile.profile_picture.url # type: ignore
     
     class Meta:
         verbose_name_plural = "Stories"
