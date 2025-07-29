@@ -12,7 +12,7 @@ class ProductRetreiveUpdateView(RetrieveUpdateAPIView):
             return ProductCreateUpdateSerializer
         return ProductSerializer
 class ProductListCreateView(ListCreateAPIView):
-    queryset = Product.objects.all()
+    queryset = Product.objects.order_by("-product_initial_time")
     serializer_class = ProductSerializer
     def perform_create(self, serializer):
         serializer.save()
