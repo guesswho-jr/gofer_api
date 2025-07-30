@@ -1,18 +1,22 @@
 from rest_framework import generics
 from rest_framework.response import Response
-from story.serializers import StoryCreateUpdateSerializer, StorySerializerList
+from story.serializers import StoryCreateUpdateSerializer, StorySerializer
 
 from .models import Story
 from django.utils import timezone
 
 class StoryListView(generics.ListAPIView):
     queryset = Story.objects.filter(created_at__gt = timezone.now() - timezone.timedelta(days=1))
-    serializer_class = StorySerializerList
+    serializer_class = StorySerializer
     
-class StoryRetrieveView(generics.RetrieveAPIView):
+class StoryRetrieveUpdateView(generics.RetrieveUpdateAPIView):
     queryset = Story.objects.filter(created_at__gt = timezone.now() - timezone.timedelta(days=1))
-    serializer_class = StorySerializerList
+    # serializer_class = StorySerializerList
     lookup_field = 'id'
+    def get_serializer_class(self): # type: ignore
+        if self.request.method in ["PUT", "PATCH"]:
+            return StoryCreateUpdateSerializer
+        return StorySerializer
 
 class StoryCreateView(generics.CreateAPIView):
     queryset = Story.objects.all()

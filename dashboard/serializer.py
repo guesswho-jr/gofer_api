@@ -33,7 +33,6 @@ class ProductCreateUpdateSerializer(ModelSerializer):
                   "product_description",
                   "product_original_price",
                   "discount_amount",
-                  "product_amount",
                   "product_image", 
                   "product_badge",
                   "vendor",
