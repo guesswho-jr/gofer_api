@@ -1,4 +1,5 @@
 from decimal import Decimal
+from typing import Iterable
 import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -19,7 +20,8 @@ class Product(models.Model):
     discount_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal(0.00))
     product_amount = models.PositiveIntegerField()
     product_image = models.ImageField(upload_to="products")
-    product_badge = models.CharField(max_length=128, null=True)
+    product_badge = models.CharField(max_length=512, null=True)
+    location = models.CharField(max_length=512, blank=False, null=False)
     def __str__(self):
         return self.product_name
     @property
@@ -47,4 +49,4 @@ class Product(models.Model):
         return naturaltime(self.product_initial_time)
     @property
     def image(self):
-        return self.product_image.url
+        return [self.product_image.url]

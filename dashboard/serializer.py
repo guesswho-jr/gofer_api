@@ -19,7 +19,8 @@ class ProductSerializer(ModelSerializer):
                   "vendor_image",
                   "vendor",
                   "full_name",
-                  "image"
+                  "image",
+                  "location"
                   ]
 
 
@@ -35,7 +36,8 @@ class ProductCreateUpdateSerializer(ModelSerializer):
                   "product_amount",
                   "product_image", 
                   "product_badge",
-                  "vendor" 
+                  "vendor",
+                  "location"
                   )
     def validate(self, attrs):
         if attrs["product_original_price"] <= attrs["discount_amount"]:

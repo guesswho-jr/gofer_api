@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'rest_framework',
     # "corsheaders", #REMOVE
     'adrf',
+    'dashboard',
     'story',
     'accounts.apps.AccountsConfig',
     'rest_framework_simplejwt',
@@ -47,7 +48,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'dashboard'
 ]
 
 MIDDLEWARE = [
