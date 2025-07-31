@@ -19,13 +19,14 @@ class Product(models.Model):
     product_initial_time = models.DateTimeField(help_text=_("The time when the product is added to stock"), auto_now_add=True)
     discount_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal(0.00))
     # product_image = models.ImageField(upload_to="products")
-    product_badge = models.CharField(max_length=512, null=True)
+    badges = models.JSONField(max_length=512, null=True)
     location = models.CharField(max_length=512, blank=False, null=False)
     review_count = models.PositiveIntegerField(default=0)
     total_calories = models.PositiveIntegerField(null=False, blank=False)
     is_vegeterian = models.BooleanField()
     ingredients = models.JSONField()
     dietaryTags = models.JSONField()
+    average_rating = models.DecimalField(decimal_places=2, max_digits=3, default=Decimal(0.00))
 
     def __str__(self):
         return self.product_name
@@ -63,4 +64,9 @@ class Image(models.Model):
     image = models.ImageField(upload_to="products/")
     def __str__(self) -> str:
         return self.post.product_name
-    
+class Review(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="reviewed_by")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="reviewed_product")
+    review = models.TextField()
+    def __str__(self) -> str:
+        return self.user.username

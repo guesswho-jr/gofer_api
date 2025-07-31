@@ -1,8 +1,10 @@
-from rest_framework.serializers import Serializer, ModelSerializer
+from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers 
 from Gofer_main.exception_classes import UnknownException
-from .models import Product, User
+from .models import Product, Review, User
 from rest_framework.exceptions import ValidationError
+from django.core.exceptions import BadRequest
+from .models import Image
 
 class ProductSerializer(ModelSerializer):
     class Meta:
@@ -14,28 +16,42 @@ class ProductSerializer(ModelSerializer):
                   "final_price",
                   "product_original_price",
                   "is_discounted",
-                  "product_badge",
                   "vendor_image",
                   "vendor",
                   "full_name",
                   "location",
                   "product_images",
+                  "dietaryTags",
+                  "ingredients",
+                  "is_vegeterian",
+                  "total_calories",
+                  "review_count",
+                  "badges",
+                  "average_rating"
                   ]
 
 
 
 class ProductCreateUpdateSerializer(ModelSerializer):
     vendor = serializers.CharField()
+    # images = serializers.ImageField()
     class Meta:
         model = Product
         fields = ("product_name", 
                   "product_description",
                   "product_original_price",
                   "discount_amount",
-                  "product_image", 
-                  "product_badge",
                   "vendor",
-                  "location"
+                  "location",
+                #   "product_images",
+                # "images",
+                  "dietaryTags",
+                  "ingredients",
+                  "is_vegeterian",
+                  "total_calories",
+                  "review_count",
+                  "badges",
+                  "rating"
                   )
     def validate(self, attrs):
         if attrs["product_original_price"] <= attrs["discount_amount"]:
@@ -49,16 +65,26 @@ class ProductCreateUpdateSerializer(ModelSerializer):
             raise ValidationError("The vendor you requested does not exist. ", "user_not_found")
         except Exception as e:
             raise UnknownException(e)
-        return Product.objects.create(user=u, **validated_data)
-    def update(self, instance, validated_data):
+        post = Product.objects.create(user=u, **validated_data)
+        return post
+    def update(self, instance: Product, validated_data):
         username = validated_data.pop("vendor")
+        ratingReceived = validated_data.pop("rating")
+        try:
+            ratingReceived = int(ratingReceived)
+        except:
+            raise BadRequest()
         try: 
             u = User.objects.get(username=username)
+            # p = Product.objects.get(id=validated_data["id"])
         except User.DoesNotExist: 
             raise ValidationError("The vendor you requested does not exist. ", "user_not_found")
+        except Product.DoesNotExist:
+            raise ValidationError("The product you requested does not exist", "product_doesn't_exist")
         except Exception as e:
             raise UnknownException(e)
-        return super().update(instance, {**validated_data, "user":u})
+        rating = (ratingReceived + instance.average_rating) / 2
+        return super().update(instance, {**validated_data, "user":u, "rating": rating})
                                           
     
 class UUIDField(serializers.UUIDField):
@@ -70,3 +96,8 @@ class UUIDField(serializers.UUIDField):
         except Exception as e:
             raise UnknownException(e)
 
+class ProductReviewSerializer(serializers.ModelSerializer):
+    product_id = UUIDField()
+    class Meta:
+        model = Review
+        fields = ("product_id", "review")
