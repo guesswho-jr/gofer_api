@@ -18,9 +18,15 @@ class Product(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     product_initial_time = models.DateTimeField(help_text=_("The time when the product is added to stock"), auto_now_add=True)
     discount_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal(0.00))
-    product_image = models.ImageField(upload_to="products")
+    # product_image = models.ImageField(upload_to="products")
     product_badge = models.CharField(max_length=512, null=True)
     location = models.CharField(max_length=512, blank=False, null=False)
+    review_count = models.PositiveIntegerField(default=0)
+    total_calories = models.PositiveIntegerField(null=False, blank=False)
+    is_vegeterian = models.BooleanField()
+    ingredients = models.JSONField()
+    dietaryTags = models.JSONField()
+
     def __str__(self):
         return self.product_name
     @property
@@ -43,9 +49,18 @@ class Product(models.Model):
         return f"{self.user.first_name} {self.user.last_name}"
     @property
     def posted_at(self):
-        # this is some time ago
-        # return f"{timesince(self.product_initial_time, timezone.now() )} ago"
         return naturaltime(self.product_initial_time)
     @property
-    def image(self):
-        return [self.product_image.url]
+    def product_images(self):
+        p= Product.objects.get(id=self.id)
+        images=[]
+        for image in p.images.all(): # type: ignore
+            images.append(image.image.url)
+        return images
+
+class Image(models.Model):
+    post = models.ForeignKey(Product, related_name="images", on_delete=models.CASCADE)
+    image = models.ImageField(upload_to="products/")
+    def __str__(self) -> str:
+        return self.post.product_name
+    

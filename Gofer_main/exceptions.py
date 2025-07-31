@@ -24,14 +24,13 @@ def commonExceptions(exc, _):
             "error": True, "code": exc.default_code,
             "info": exc.detail
             
-        })
+        }, status=403)
     elif isinstance(exc, ValidationError):
-        print(exc)
         return Response({
             "error": True, "code": "validation_error",
             "info": "The information you submitted is not correct. If this issue persists report to us."
             
-        })
+        }, status=403)
     elif isinstance(exc, BadRequest):
         return Response({
             "error": True, "code": "bad_request",

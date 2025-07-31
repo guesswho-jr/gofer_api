@@ -13,14 +13,13 @@ class ProductSerializer(ModelSerializer):
                   "posted_at",
                   "final_price",
                   "product_original_price",
-                  "product_amount",
                   "is_discounted",
                   "product_badge",
                   "vendor_image",
                   "vendor",
                   "full_name",
-                  "image",
-                  "location"
+                  "location",
+                  "product_images",
                   ]
 
 
