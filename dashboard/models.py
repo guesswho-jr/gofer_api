@@ -70,3 +70,6 @@ class Review(models.Model):
     review = models.TextField()
     def __str__(self) -> str:
         return self.user.username
+    @property
+    def username(self):
+        return self.user.username

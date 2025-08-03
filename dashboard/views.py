@@ -1,10 +1,14 @@
 from rest_framework.response import Response
 from .serializer import ProductCreateUpdateSerializer, ProductReviewSerializer, ProductSerializer
-from .models import Image, Product, Review
+from .models import Image, Product, Review, User
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateAPIView
 from rest_framework.parsers import MultiPartParser, FormParser
 from Gofer_main.exceptions import ValidationError
-from rest_framework.decorators import api_view
+from rest_framework.views import APIView
+from django.db.utils import IntegrityError
+from rest_framework.exceptions import APIException
+
+
 class ProductRetreiveUpdateView(RetrieveUpdateAPIView):
     queryset = Product.objects.all()
     lookup_field = 'id'
@@ -33,13 +37,28 @@ class ProductListCreateView(ListCreateAPIView):
         return ProductSerializer
 
 
-@api_view(["GET"])
-def product_review(request, *args, **kwargs):
-    product_id = kwargs.get("product")
-        # product = Product.objects.get(id=product_id)
-    data = Review.objects.filter(product__id=product_id)
-    if not data.exists():
-        raise ValidationError("Review doesn't exist for this product", "not_found")
-    data = ProductReviewSerializer(data, many=True)
-    if data:
-        return Response(data.data)
+#REviw post not done.
+class ProductReview(APIView):
+    serializer = ProductReviewSerializer
+    def get(self, *args, **kwargs):
+        product_id = kwargs.get("product")
+        data = Review.objects.filter(product__id=product_id)
+        if not data.exists():
+            raise ValidationError("Review doesn't exist for this product", "not_found")
+        data = self.serializer(data, many=True).data
+        if data:
+            return Response(data)
+    def post(self, *args, **kwargs):
+        product_id = kwargs.get("product")
+        data = self.serializer(data=self.request.POST)
+        if data.is_valid(raise_exception=True):
+            product = Product.objects.get(id=product_id)
+            username = data.data.get("username") # type: ignore
+            user = User.objects.get(username=username)
+            review = data.data.get('review') # type: ignore
+            try:
+                Review.objects.create(product=product, user=user, review=review)
+            except IntegrityError:
+                raise APIException("You can't review one product more than once", code="not_allowed")
+            return Response({"success": True})
+        return Response({"success": False})

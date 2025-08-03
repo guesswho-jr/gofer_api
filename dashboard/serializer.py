@@ -97,7 +97,7 @@ class UUIDField(serializers.UUIDField):
             raise UnknownException(e)
 
 class ProductReviewSerializer(serializers.ModelSerializer):
-    product_id = UUIDField()
+    username = serializers.CharField()
     class Meta:
         model = Review
-        fields = ("product_id", "review")
+        fields = ("review", "username", "username")
