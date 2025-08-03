@@ -21,7 +21,7 @@ class Product(models.Model):
     # product_image = models.ImageField(upload_to="products")
     badges = models.JSONField(max_length=512, null=True)
     location = models.CharField(max_length=512, blank=False, null=False)
-    review_count = models.PositiveIntegerField(default=0)
+    # review_count = models.PositiveIntegerField(default=0)
     total_calories = models.PositiveIntegerField(null=False, blank=False)
     is_vegeterian = models.BooleanField()
     ingredients = models.JSONField()
@@ -58,6 +58,9 @@ class Product(models.Model):
         for image in p.images.all(): # type: ignore
             images.append(image.image.url)
         return images
+    @property
+    def review_count(self):
+        return Review.objects.filter(product__id=self.id).count()
 
 class Image(models.Model):
     post = models.ForeignKey(Product, related_name="images", on_delete=models.CASCADE)
