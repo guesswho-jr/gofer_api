@@ -26,7 +26,7 @@ class ProductSerializer(ModelSerializer):
                   "is_vegeterian",
                   "total_calories",
                   "review_count",
-                  "badges",
+                  "tags",
                   "average_rating"
                   ]
 
@@ -50,7 +50,7 @@ class ProductCreateUpdateSerializer(ModelSerializer):
                   "is_vegeterian",
                   "total_calories",
                   "review_count",
-                  "badges",
+                  "tags",
                   "rating"
                   )
     def validate(self, attrs):
