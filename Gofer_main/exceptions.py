@@ -15,8 +15,10 @@ def commonExceptions(exc, _):
         }, status=status.HTTP_405_METHOD_NOT_ALLOWED)
     elif isinstance(exc, InvalidToken):
         return Response({
+            "error": True, 
+            "code": "TOKEN_INVALID",
             "info": [
-                "Your token is invalid or expired"
+                "Your account information is invalid or expired. Please log in again."
             ]
         },status=status.HTTP_401_UNAUTHORIZED) 
     elif isinstance(exc, APIException):
