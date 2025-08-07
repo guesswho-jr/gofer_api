@@ -4,7 +4,6 @@ from Gofer_main.exception_classes import UnknownException
 from .models import Product, Review, User
 from rest_framework.exceptions import ValidationError
 from django.core.exceptions import BadRequest
-from .models import Image
 
 class ProductSerializer(ModelSerializer):
     class Meta:
@@ -27,7 +26,8 @@ class ProductSerializer(ModelSerializer):
                   "total_calories",
                   "review_count",
                   "tags",
-                  "average_rating"
+                  "average_rating",
+                  "category"
                   ]
 
 
@@ -43,8 +43,7 @@ class ProductCreateUpdateSerializer(ModelSerializer):
                   "discount_amount",
                   "vendor",
                   "location",
-                #   "product_images",
-                # "images",
+                "category",
                   "dietaryTags",
                   "ingredients",
                   "is_vegeterian",

@@ -25,6 +25,7 @@ class Product(models.Model):
     ingredients = models.JSONField()
     dietaryTags = models.JSONField()
     average_rating = models.DecimalField(decimal_places=2, max_digits=3, default=Decimal(0.00))
+    category = models.CharField(max_length=512)
 
     def __str__(self):
         return self.product_name
