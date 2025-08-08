@@ -34,6 +34,7 @@ class ProductSerializer(ModelSerializer):
 
 class ProductCreateUpdateSerializer(ModelSerializer):
     vendor = serializers.CharField()
+    rating = serializers.IntegerField()
     # images = serializers.ImageField()
     class Meta:
         model = Product
@@ -58,6 +59,8 @@ class ProductCreateUpdateSerializer(ModelSerializer):
         return attrs
     def create(self, validated_data: dict):
         username = validated_data.pop("vendor")
+        if "rating" in validated_data.keys():
+            validated_data.pop("rating")
         try: 
             u = User.objects.get(username=username)
         except User.DoesNotExist: 
@@ -71,6 +74,8 @@ class ProductCreateUpdateSerializer(ModelSerializer):
         ratingReceived = validated_data.pop("rating")
         try:
             ratingReceived = int(ratingReceived)
+            if ratingReceived < 0:
+                raise Exception()
         except:
             raise BadRequest()
         try: 

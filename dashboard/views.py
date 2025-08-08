@@ -1,3 +1,4 @@
+from collections import defaultdict
 from rest_framework.response import Response
 from .serializer import ProductCreateUpdateSerializer, ProductReviewSerializer, ProductSerializer
 from .models import Image, Product, Review, User
@@ -31,10 +32,20 @@ class ProductListCreateView(ListCreateAPIView):
             return Response({
                 "success": True
             }, status=201)
+    
     def get_serializer_class(self): # type: ignore
         if self.request.method in ["POST", "PUT"]:
             return ProductCreateUpdateSerializer
         return ProductSerializer
+    def list(self, request, *args, **kwargs):
+        grouped = defaultdict(list)
+        for product in self.queryset.all():
+            serializer = self.get_serializer_class()
+            serialized = serializer(product).data
+            grouped[product.category].append(serialized)
+            
+        return Response(grouped)
+        # return super().list(request, *args, **kwargs)
 
 
 #REviw post not done.
