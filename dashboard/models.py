@@ -4,8 +4,8 @@ import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
-from django.contrib.humanize.templatetags.humanize import naturaltime
-
+# from django.contrib.humanize.templatetags.humanize import naturaltime
+from django.utils.timesince import timesince
 
 User = get_user_model()
 
@@ -49,7 +49,9 @@ class Product(models.Model):
         return f"{self.user.first_name} {self.user.last_name}"
     @property
     def posted_at(self):
-        return naturaltime(self.product_initial_time)
+        # return naturaltime(self.product_initial_time)
+        return timesince(self.product_initial_time, depth=1) # type: ignore
+        
     @property
     def product_images(self):
         p= Product.objects.get(id=self.id)

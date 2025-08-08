@@ -43,8 +43,8 @@ class ProductListCreateView(ListCreateAPIView):
             serializer = self.get_serializer_class()
             serialized = serializer(product).data
             grouped[product.category].append(serialized)
-            
-        return Response(grouped)
+        result = [{"category": cat, "products": prods} for cat, prods in grouped.items()]
+        return Response(result)
         # return super().list(request, *args, **kwargs)
 
 
