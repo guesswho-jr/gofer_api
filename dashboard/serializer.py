@@ -41,7 +41,8 @@ class ProductListSerailizer(ModelSerializer):
                   "product_name",
                   "full_name",
                   "average_rating",
-                  "id"]
+                  "id",
+                  "product_images"]
 class ProductCreateUpdateSerializer(ModelSerializer):
     vendor = serializers.CharField()
     rating = serializers.IntegerField()
