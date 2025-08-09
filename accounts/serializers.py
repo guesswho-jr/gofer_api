@@ -10,7 +10,8 @@ class RegisterSerializerAsync(serializers.Serializer):
     cpassword = srl.CharField()
     first_name = srl.CharField()
     last_name = srl.CharField()
-    # profile_picture = srl.ImageField()
+    location = srl.JSONField()
+    profile_picture = srl.ImageField()
 class LoginSerializerAsync(serializers.Serializer):
     username= srl.CharField()
     password = srl.CharField()

@@ -52,7 +52,6 @@ class ProductCreateUpdateSerializer(ModelSerializer):
                   "product_original_price",
                   "discount_amount",
                   "vendor",
-                  "location",
                 "category",
                   "dietaryTags",
                   "ingredients",
@@ -70,6 +69,14 @@ class ProductCreateUpdateSerializer(ModelSerializer):
         username = validated_data.pop("vendor")
         if "rating" in validated_data.keys():
             validated_data.pop("rating")
+        for field in ["tags", "ingredients", "dietaryTags"]:
+            try:
+                if not isinstance(validated_data[field], list):
+                    raise BadRequest()
+            except KeyError:
+                raise BadRequest()
+            # except Exception as e:
+            #     raise UnknownException(e)
         try: 
             u = User.objects.get(username=username)
         except User.DoesNotExist: 
@@ -78,7 +85,7 @@ class ProductCreateUpdateSerializer(ModelSerializer):
             raise UnknownException(e)
         post = Product.objects.create(user=u, **validated_data)
         return post
-    def update(self, instance: Product, validated_data):
+    def update(self, instance: Product, validated_data: dict):
         username = validated_data.pop("vendor")
         ratingReceived = validated_data.pop("rating")
         try:
