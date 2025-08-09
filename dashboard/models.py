@@ -19,7 +19,7 @@ class Product(models.Model):
     product_initial_time = models.DateTimeField(help_text=_("The time when the product is added to stock"), auto_now_add=True)
     discount_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal(0.00))
     tags = models.JSONField(max_length=512, null=True)
-    location = models.CharField(max_length=512, blank=False, null=False)
+    # location = models.CharField(max_length=512, blank=False, null=False)
     total_calories = models.PositiveIntegerField(null=False, blank=False)
     is_vegeterian = models.BooleanField()
     ingredients = models.JSONField()
@@ -29,6 +29,10 @@ class Product(models.Model):
 
     def __str__(self):
         return self.product_name
+    @property
+    def location(self):
+        return self.user.profile.location  # type: ignore
+    
     @property
     def final_price(self):
         data = float(self.product_original_price - self.discount_amount)
