@@ -33,11 +33,12 @@ class ProductSerializer(ModelSerializer):
 class ProductListSerailizer(ModelSerializer):
     # make it vendor_image, vendor, at, location, name, full_name, average_rating
     class Meta:
+        model = Product
         fields = ["vendor_image",
                   "vendor",
                   "posted_at",
                   "location",
-                  "name",
+                  "product_name",
                   "full_name",
                   "average_rating"]
 class ProductCreateUpdateSerializer(ModelSerializer):
