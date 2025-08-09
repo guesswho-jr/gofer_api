@@ -30,8 +30,16 @@ class ProductSerializer(ModelSerializer):
                   "category"
                   ]
 
-
-
+class ProductListSerailizer(ModelSerializer):
+    # make it vendor_image, vendor, at, location, name, full_name, average_rating
+    class Meta:
+        fields = ["vendor_image",
+                  "vendor",
+                  "posted_at",
+                  "location",
+                  "name",
+                  "full_name",
+                  "average_rating"]
 class ProductCreateUpdateSerializer(ModelSerializer):
     vendor = serializers.CharField()
     rating = serializers.IntegerField()

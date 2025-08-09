@@ -50,7 +50,10 @@ class Product(models.Model):
     @property
     def posted_at(self):
         # return naturaltime(self.product_initial_time)
-        return timesince(self.product_initial_time, depth=1) # type: ignore
+        time = timesince(self.product_initial_time, depth=1) # type: ignore
+        if '0' in time:
+            return "now"
+        return time + " ago"
         
     @property
     def product_images(self):

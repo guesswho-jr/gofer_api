@@ -1,6 +1,6 @@
 from collections import defaultdict
 from rest_framework.response import Response
-from .serializer import ProductCreateUpdateSerializer, ProductReviewSerializer, ProductSerializer
+from .serializer import ProductCreateUpdateSerializer, ProductListSerailizer, ProductReviewSerializer, ProductSerializer
 from .models import Image, Product, Review, User
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateAPIView
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -36,7 +36,7 @@ class ProductListCreateView(ListCreateAPIView):
     def get_serializer_class(self): # type: ignore
         if self.request.method in ["POST", "PUT"]:
             return ProductCreateUpdateSerializer
-        return ProductSerializer
+        return ProductListSerailizer
     def list(self, request, *args, **kwargs):
         grouped = defaultdict(list)
         for product in self.queryset.all():
