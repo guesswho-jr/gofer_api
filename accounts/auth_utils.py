@@ -85,6 +85,7 @@ async def loginView(request):
         try:
             username_validator(data["username"])
         except ValidationError:
+            
             return Response({"info":[ "The data you provided is not valid"]}, status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
             raise UnknownException(e)
@@ -99,7 +100,8 @@ async def loginView(request):
                 "access": str(access)
             }, status.HTTP_200_OK)
         return Response({
-            "info": ["Couldn't log you in. Check username and/or password"]
+            "info": ["Couldn't log you in. Check username and/or password" ],
+            "code" : "unauthorized"
         },  status.HTTP_401_UNAUTHORIZED)
     else:
         return Response({"info": ["Validation failed"]}, status.HTTP_400_BAD_REQUEST) 
