@@ -1,17 +1,24 @@
-from adrf import serializers
-from rest_framework import serializers as srl
+from rest_framework import serializers
+from adrf.serializers import Serializer
+
+from accounts.models import UserProfile
 
 
 
-class RegisterSerializerAsync(serializers.Serializer):
-    username = srl.CharField()
-    password = srl.CharField()
-    email = srl.EmailField()
-    cpassword = srl.CharField()
-    first_name = srl.CharField()
-    last_name = srl.CharField()
-    location = srl.JSONField()
-    profile_picture = srl.ImageField()
-class LoginSerializerAsync(serializers.Serializer):
-    username= srl.CharField()
-    password = srl.CharField()
+class RegisterSerializer(serializers.Serializer):
+    user_type = serializers.CharField()
+    username = serializers.CharField()
+    password = serializers.CharField()
+    email = serializers.EmailField()
+    cpassword = serializers.CharField()
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+    location = serializers.JSONField(required=False)
+    # profile_picture = serializers.ImageField()
+class LoginSerializerAsync(serializers.ModelSerializer):
+    class Meta:
+        fields = ['username', 'password']
+class UserDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = ('username', "email", "full_name")

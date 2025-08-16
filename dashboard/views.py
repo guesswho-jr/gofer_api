@@ -1,4 +1,5 @@
 from collections import defaultdict
+from django.http import Http404
 from rest_framework.response import Response
 from .serializer import ProductCreateUpdateSerializer, ProductListSerailizer, ProductReviewSerializer, ProductSerializer
 from .models import Image, Product, Review, User
@@ -59,6 +60,8 @@ class ProductReview(APIView):
         data = self.serializer(data, many=True).data
         if data:
             return Response(data)
+        else:
+            raise Http404()
     def post(self, *args, **kwargs):
         product_id = kwargs.get("product")
         data = self.serializer(data=self.request.POST)

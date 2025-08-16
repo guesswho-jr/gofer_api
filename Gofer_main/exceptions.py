@@ -44,6 +44,7 @@ def commonExceptions(exc, _):
             "code": "field_does_not_exist",
             "info": "The field you requested does not exist"
         },status=400)
+    
     # else:
     #     logger.critical(f"Unknown error occured {str(exc)}")
     #     return Response({

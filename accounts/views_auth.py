@@ -2,15 +2,14 @@ from django.contrib.auth import get_user_model, password_validation, authenticat
 from django.db import IntegrityError
 from django.forms import ValidationError
 from rest_framework.response import Response
-from .serializers import RegisterSerializerAsync, LoginSerializerAsync
+from accounts.models import Provider, UserProfile
+from .serializers import RegisterSerializer, LoginSerializerAsync
 from adrf.decorators import api_view
-from rest_framework.decorators import parser_classes
 from asgiref.sync import sync_to_async
 from rest_framework import status
 from django.contrib.auth.validators import UnicodeUsernameValidator
 import re
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
-from utils.log import logger
 from Gofer_main.exception_classes import UnknownException
 from rest_framework.parsers import MultiPartParser, FormParser, FileUploadParser
 
@@ -22,14 +21,15 @@ username_validator = UnicodeUsernameValidator()
 
 User = get_user_model()
 
-
 @api_view(["POST"])
-@parser_classes([MultiPartParser, FormParser, FileUploadParser])
-async def registerView(request):
-    serializer = RegisterSerializerAsync(data=request.data)
+def registerView(request):
+    serializer = RegisterSerializer(data=request.data)
     if serializer.is_valid(raise_exception=True):
-        data = await serializer.adata # type: ignore
-
+        data = serializer.data 
+        user_type = data.pop("user_type") 
+        profile_picture = request.FILES["profile_picture"]
+        if not user_type in ["provider", "user"]:
+            raise ValidationError("Not a valid data")
         ###################-Password validation-##################
         if data["password"] == data["cpassword"]:
             try:
@@ -54,15 +54,18 @@ async def registerView(request):
         #----------------------------------------------------------------
         #################################################################
         try:
-            user = await sync_to_async(User.objects.create_user)(username=data["username"],
+            user = User.objects.create_user(username=data["username"],
                                 email=data["email"],
                                 password=data["password"],
                                 first_name=data["first_name"],
                                 last_name=data["last_name"])
             if not user:
                 return Response({"error" : ["Error occured when trying to create user"]})
+            up = UserProfile.objects.create(user=user, profile_picture=profile_picture)
             
-            # UserProfile.objects.create(user=user, profile_picture=data["profile_picture"])
+            if user_type == "provider":
+                Provider.objects.create(user_profile=up, location=data["location"])
+                
             
         except IntegrityError:
             return Response({"info": ["Already signed up"]}, status=status.HTTP_403_FORBIDDEN)
