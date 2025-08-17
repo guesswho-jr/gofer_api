@@ -25,7 +25,7 @@ User = get_user_model()
 def registerView(request):
     serializer = RegisterSerializer(data=request.data)
     if serializer.is_valid(raise_exception=True):
-        data = serializer.data 
+        data = dict(serializer.data)
         user_type = data.pop("user_type") 
         profile_picture = request.FILES["profile_picture"]
         if not user_type in ["provider", "user"]:
