@@ -4,7 +4,6 @@ from rest_framework.response import Response
 from .serializer import ProductCreateUpdateSerializer, ProductListSerailizer, ProductReviewSerializer, ProductSerializer
 from .models import Image, Product, Review, User
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateAPIView
-from rest_framework.parsers import MultiPartParser, FormParser
 from Gofer_main.exceptions import ValidationError
 from rest_framework.views import APIView
 from django.db.utils import IntegrityError
@@ -20,8 +19,6 @@ class ProductRetreiveUpdateView(RetrieveUpdateAPIView):
         return ProductSerializer
 class ProductListCreateView(ListCreateAPIView):
     queryset = Product.objects.order_by("-product_initial_time")
-    # serializer_class = ProductSerializer
-    parser_classes = (MultiPartParser, FormParser)
     def perform_create(self, serializer):
         post = serializer.save()
         for image in self.request.FILES.getlist("images"):
@@ -42,8 +39,9 @@ class ProductListCreateView(ListCreateAPIView):
         grouped = defaultdict(list)
         for product in self.queryset.all():
             serializer = self.get_serializer_class()
-            serialized = serializer(product).data
-            grouped[product.category].append(serialized)
+            serialized = dict(serializer(product).data)
+            if product.is_provider:
+                grouped[product.category].append(serialized)
         result = [{"category": cat, "products": prods} for cat, prods in grouped.items()]
         return Response(result)
         # return super().list(request, *args, **kwargs)

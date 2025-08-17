@@ -1,7 +1,6 @@
 from rest_framework import serializers
-from adrf.serializers import Serializer
 
-from accounts.models import UserProfile
+from accounts.models import User, UserProfile
 
 
 
@@ -15,10 +14,22 @@ class RegisterSerializer(serializers.Serializer):
     last_name = serializers.CharField()
     location = serializers.JSONField(required=False)
     # profile_picture = serializers.ImageField()
-class LoginSerializerAsync(serializers.ModelSerializer):
-    class Meta:
-        fields = ['username', 'password']
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
 class UserDetailSerializer(serializers.ModelSerializer):
+    # full_name = serializers.CharField()
+    class Meta:
+        model = User
+        fields = ('username', "email")
+        
+        # def get_full_name(self):
+        #     return 'test'
+class UserProfileDetailSerializer(serializers.ModelSerializer):
+    # full_name = serializers.CharField()
     class Meta:
         model = UserProfile
-        fields = ('username', "email", "full_name")
+        fields = ('full_name', "profilePicture", "is_provider")
+        
+        # def get_full_name(self):
+        #     return 'test'

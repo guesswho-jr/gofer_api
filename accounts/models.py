@@ -13,6 +13,13 @@ class UserProfile(models.Model):
     @property
     def profilePicture(self):
         return self.profile_picture.url
+    @property
+    def full_name(self):
+        return self.user.first_name + ' ' + self.user.last_name
+    # @property
+    # def username(self):
+    #     return self.user.username
+    
 class Provider(models.Model):
     user_profile = models.OneToOneField(to=UserProfile, on_delete=models.CASCADE, related_name="provider")
     location = models.JSONField(null=True, blank=True)

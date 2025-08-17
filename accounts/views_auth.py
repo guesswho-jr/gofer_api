@@ -3,15 +3,14 @@ from django.db import IntegrityError
 from django.forms import ValidationError
 from rest_framework.response import Response
 from accounts.models import Provider, UserProfile
-from .serializers import RegisterSerializer, LoginSerializerAsync
-from adrf.decorators import api_view
+from .serializers import RegisterSerializer, LoginSerializer
+from rest_framework.decorators import api_view
 from asgiref.sync import sync_to_async
 from rest_framework import status
 from django.contrib.auth.validators import UnicodeUsernameValidator
 import re
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from Gofer_main.exception_classes import UnknownException
-from rest_framework.parsers import MultiPartParser, FormParser, FileUploadParser
 
 
 NAME_REGEX = r"[a-zA-Z]+"
@@ -79,10 +78,10 @@ def registerView(request):
     
     
 @api_view(["POST"])
-async def loginView(request):
-    serializer = LoginSerializerAsync(data=request.POST)
-    if serializer.is_valid():
-        data = await serializer.adata # type: ignore
+def loginView(request):
+    serializer = LoginSerializer(data=request.POST)
+    if serializer.is_valid(raise_exception=True):
+        data = dict(serializer.data)
         username = data['username']
         password = data['password']
         try:
@@ -93,7 +92,7 @@ async def loginView(request):
         except Exception as e:
             raise UnknownException(e)
         
-        user = await sync_to_async(authenticate)(username=username, password=password)
+        user =  authenticate(username=username, password=password)
         if user:
             refresh = RefreshToken.for_user(user)
             access = AccessToken.for_user(user)
