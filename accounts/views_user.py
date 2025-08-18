@@ -26,8 +26,7 @@ class UserGetView(generics.RetrieveAPIView):
         else:
             user_product_data = []
         additional_info = {"product_count": user_products.count(), "products": user_product_data}
-        
-            
         user_data_data = {**user_data, **user_profile_data, **additional_info}
         return Response(user_data_data)
 
+# Next up: Paging

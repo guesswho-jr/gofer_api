@@ -1,5 +1,4 @@
 from decimal import Decimal
-from typing import Iterable
 import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -18,7 +17,7 @@ class Product(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     product_initial_time = models.DateTimeField(help_text=_("The time when the product is added to stock"), auto_now_add=True)
     discount_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal(0.00))
-    tags = models.JSONField(max_length=512, null=True)
+    tags = models.JSONField(null=True)
     total_calories = models.PositiveIntegerField(null=False, blank=False)
     is_vegeterian = models.BooleanField()
     ingredients = models.JSONField()
@@ -30,13 +29,13 @@ class Product(models.Model):
         return self.product_name
     @property
     def location(self):
-        return self.user.profile.location  # type: ignore
+        return self.user.profile.provider.location  # type: ignore
     
     @property
     def final_price(self):
         data = float(self.product_original_price - self.discount_amount)
         if data <=0:
-            return None
+            return self.product_original_price
         return data
     @property
     def is_discounted(self):
@@ -57,8 +56,6 @@ class Product(models.Model):
     def posted_at(self):
         # return naturaltime(self.product_initial_time)
         time = timesince(self.product_initial_time, depth=1) # type: ignore
-        if '0' in time:
-            return "now"
         return time + " ago"
         
     @property
