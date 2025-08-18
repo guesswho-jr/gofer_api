@@ -1,13 +1,14 @@
 from rest_framework import generics
 from rest_framework.response import Response
 from story.serializers import StoryCreateUpdateSerializer, StorySerializer
-
+from rest_framework.pagination import PageNumberPagination
 from .models import Story
 from django.utils import timezone
 
 class StoryListView(generics.ListAPIView):
     queryset = Story.objects.filter(created_at__gt = timezone.now() - timezone.timedelta(days=1))
     serializer_class = StorySerializer
+    pagination_class = PageNumberPagination
     
 class StoryRetrieveUpdateView(generics.RetrieveUpdateAPIView):
     queryset = Story.objects.filter(created_at__gt = timezone.now() - timezone.timedelta(days=1))
