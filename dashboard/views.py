@@ -12,6 +12,7 @@ from django.db.utils import IntegrityError
 from rest_framework.exceptions import APIException
 from rest_framework.pagination import PageNumberPagination
 
+
 class ProductRetreiveUpdateView(RetrieveUpdateAPIView):
     queryset = Product.objects.all()
     lookup_field = 'id'
@@ -41,17 +42,18 @@ class ProductListCreateView(ListCreateAPIView):
         return ProductListSerailizer
     def list(self, request, *args, **kwargs):
         grouped = defaultdict(list)
-        page = self.paginate_queryset(self.queryset)
+        paginator = self.pagination_class()
+        page = paginator.paginate_queryset(self.queryset, request)
         serializer = self.get_serializer_class()
-        if page:
-            for product in page:
+        if page is not None:
+            for product in self.queryset.all():
                 serialized = dict(serializer(product).data)
                 if product.is_provider:
                     grouped[product.category].append(serialized)
             result = [{"category": cat, "products": prods} for cat, prods in grouped.items()]
-            return Response(result)
+            return paginator.get_paginated_response(result)
         else:
-            raise UnknownException("Pagination error.")
+            raise APIException(code="fetch_error", detail="Cannot fetch data from database. ")
         # return super().list(request, *args, **kwargs)
 
 
