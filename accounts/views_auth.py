@@ -5,7 +5,6 @@ from rest_framework.response import Response
 from accounts.models import Provider, UserProfile
 from .serializers import RegisterSerializer, LoginSerializer
 from rest_framework.decorators import api_view
-from asgiref.sync import sync_to_async
 from rest_framework import status
 from django.contrib.auth.validators import UnicodeUsernameValidator
 import re
@@ -96,10 +95,12 @@ def loginView(request):
         if user:
             refresh = RefreshToken.for_user(user)
             access = AccessToken.for_user(user)
-            
             return Response({
                 "refresh": str(refresh),
-                "access": str(access)
+                "access": str(access),
+                "username": str(user.username),
+                "email": user.email,
+                "full_name": user.get_full_name()
             }, status.HTTP_200_OK)
         return Response({
             "info": ["Couldn't log you in. Check username and/or password" ],

@@ -27,8 +27,8 @@ SECRET_KEY = 'django-insecure-ec8yyj-)h#=wf@pb7)z9et@$uveju!t!8ypd_7!1*+btre(3qy
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    "192.168.4.184",
-    "localhost"
+    "localhost",
+    "192.168.182.184"
 ]
 
 
@@ -141,7 +141,7 @@ REST_FRAMEWORK = {
     ],
     "EXCEPTION_HANDLER": "Gofer_main.exceptions.commonExceptions",
     "DEFAULT_PAGINATION_CLASS" : "rest_framework.pagination.PageNumberPagination",
-    "PAGE_SIZE": 20
+    "PAGE_SIZE": 10
 }
 
 SIMPLE_JWT = {

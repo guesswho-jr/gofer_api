@@ -1,8 +1,6 @@
 from collections import defaultdict
 from django.http import Http404
 from rest_framework.response import Response
-
-from Gofer_main.exception_classes import UnknownException
 from .serializer import ProductCreateUpdateSerializer, ProductListSerailizer, ProductReviewSerializer, ProductSerializer
 from .models import Image, Product, Review, User
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateAPIView
