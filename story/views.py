@@ -4,6 +4,7 @@ from story.serializers import StoryCreateUpdateSerializer, StorySerializer
 from rest_framework.pagination import PageNumberPagination
 from .models import Story, User
 from django.utils import timezone
+# from django.db.models import Q
 from rest_framework_simplejwt.tokens import AccessToken
 class StoryListView(generics.ListAPIView):
     serializer_class = StorySerializer
@@ -14,7 +15,7 @@ class StoryListView(generics.ListAPIView):
         user = User.objects.get(pk=t["user_id"])
         return user
     def get_queryset(self): # type: ignore
-        data = Story.objects.filter(created_at__gt = timezone.now() - timezone.timedelta(days=1)).filter(uploaded_by=self.get_user_from_token())
+        data = Story.objects.filter(created_at__gt = timezone.now() - timezone.timedelta(days=1)).exclude(uploaded_by=self.get_user_from_token())
         return data
         # return super().get_queryset()
     
