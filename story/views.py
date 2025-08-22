@@ -4,7 +4,6 @@ from story.serializers import StoryCreateUpdateSerializer, StorySerializer
 from rest_framework.pagination import PageNumberPagination
 from .models import Story, User
 from django.utils import timezone
-# from django.db.models import Q
 from rest_framework_simplejwt.tokens import AccessToken
 class StoryListView(generics.ListAPIView):
     serializer_class = StorySerializer
