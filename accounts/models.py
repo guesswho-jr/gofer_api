@@ -26,6 +26,6 @@ class Provider(models.Model):
 
 class Social(models.Model):
     user = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name="follows")
-    follows = models.OneToOneField(to=User, on_delete=models.CASCADE)
+    follows = models.ForeignKey(to=User, on_delete=models.CASCADE)
     def __str__(self) -> str:
         return f"{self.user.username} follows {self.follows.username}"

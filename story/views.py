@@ -14,7 +14,11 @@ class StoryListView(generics.ListAPIView):
         user = User.objects.get(pk=t["user_id"])
         return user
     def get_queryset(self): # type: ignore
-        data = Story.objects.filter(created_at__gt = timezone.now() - timezone.timedelta(days=1)).exclude(uploaded_by=self.get_user_from_token())
+        story_wanter = self.get_user_from_token()
+        pre_follow_list = story_wanter.follows.all()
+        follow_list = map(lambda x: x.follows, pre_follow_list)
+        data = Story.objects.filter(created_at__gt = timezone.now() - timezone.timedelta(days=1)).exclude(uploaded_by=story_wanter)
+        data = data.filter(uploaded_by__in=follow_list)
         return data
         # return super().get_queryset()
     
