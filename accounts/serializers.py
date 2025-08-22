@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 
 from accounts.models import User, UserProfile
@@ -19,10 +20,27 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField()
 class UserDetailSerializer(serializers.ModelSerializer):
     # full_name = serializers.CharField()
+    follows = serializers.SerializerMethodField()
     class Meta:
         model = User
-        fields = ('username', "email")
-        
+        fields = ('username', "email", "follows")
+    def get_follows(self, obj):
+        usernames = []
+        if (isinstance(obj, User)):
+            if (hasattr(obj, "follows")):
+                # print(obj.follows.all())
+                for user in list(obj.follows.all()): # type: ignore
+                    # print(user.follows)
+                    # username = get_object_or_404(User, id=user.follows.id).username
+                    # username = User.objects.get(pk=user.id).username
+                    usernames.append(user.follows.username)
+                                       
+            else:
+                return []
+        else:
+            print("Error in here no User")
+            return []
+        return usernames
         # def get_full_name(self):
         #     return 'test'
 class UserProfileDetailSerializer(serializers.ModelSerializer):

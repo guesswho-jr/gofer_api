@@ -5,6 +5,7 @@ User = get_user_model()
 class UserProfile(models.Model):
     user = models.OneToOneField(to=User, on_delete=models.CASCADE, related_name="profile")
     profile_picture = models.ImageField(upload_to="profilePictures/")
+    # follows = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name="follows",  blank=True)
     def __str__(self):
         return self.user.username
     @property
@@ -16,13 +17,15 @@ class UserProfile(models.Model):
     @property
     def full_name(self):
         return self.user.first_name + ' ' + self.user.last_name
-    # @property
-    # def username(self):
-    #     return self.user.username
     
 class Provider(models.Model):
     user_profile = models.OneToOneField(to=UserProfile, on_delete=models.CASCADE, related_name="provider")
     location = models.JSONField(null=True, blank=True)
     def __str__(self) -> str:
         return self.user_profile.user.username
-    
+
+class Social(models.Model):
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name="follows")
+    follows = models.OneToOneField(to=User, on_delete=models.CASCADE)
+    def __str__(self) -> str:
+        return f"{self.user.username} follows {self.follows.username}"
