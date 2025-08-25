@@ -5,3 +5,4 @@ rating system - done
 Context for error handling - done
 I don't linke the cascade in dashboard models - done
 In the code pls make empty dashboard error handling
+Install channel_redis.
