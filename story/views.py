@@ -1,26 +1,13 @@
 from rest_framework import generics
 from rest_framework.response import Response
+from Gofer_main.classes import GoferView
 from story.serializers import StoryCreateUpdateSerializer, StorySerializer
-from rest_framework.pagination import PageNumberPagination
-from .models import Story, User
+
+from .models import Story
 from django.utils import timezone
-from rest_framework_simplejwt.tokens import AccessToken
-class StoryListView(generics.ListAPIView):
+class StoryListView(GoferView):
     serializer_class = StorySerializer
-    pagination_class = PageNumberPagination
-    def get_user_from_token(self):
-        raw_token = self.request.headers["Authorization"].split(" ")[1]
-        t = AccessToken(raw_token)
-        user = User.objects.get(pk=t["user_id"])
-        return user
-    def get_queryset(self): # type: ignore
-        story_wanter = self.get_user_from_token()
-        pre_follow_list = story_wanter.follows.all()
-        follow_list = map(lambda x: x.follows, pre_follow_list)
-        data = Story.objects.filter(created_at__gt = timezone.now() - timezone.timedelta(days=1)).exclude(uploaded_by=story_wanter)
-        data = data.filter(uploaded_by__in=follow_list)
-        return data
-        # return super().get_queryset()
+    queryset = Story.objects
     
 class StoryRetrieveUpdateView(generics.RetrieveUpdateAPIView):
     queryset = Story.objects.filter(created_at__gt = timezone.now() - timezone.timedelta(days=1))
