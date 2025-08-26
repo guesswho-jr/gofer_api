@@ -11,5 +11,5 @@ urlpatterns = [
 
 
 websocket_urlpatterns = [
-    path("ws/products/", consumers.DataUpdateConsumer.as_asgi())   
+    path("ws/updates/", consumers.DataUpdateConsumer.as_asgi())   
 ]

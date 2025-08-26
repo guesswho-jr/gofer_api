@@ -35,9 +35,10 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'rest_framework',
     # "corsheaders", #REMOVE
-    'adrf',
+    "channels",
     'dashboard',
     'story',
     'accounts.apps.AccountsConfig',
@@ -81,7 +82,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'Gofer_main.wsgi.application'
-
+ASGI_APPLICATION = 'Gofer_main.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -152,3 +153,18 @@ SIMPLE_JWT = {
 
 MEDIA_ROOT = "media/"
 CORS_ALLOW_ALL_ORIGINS = True
+
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": [("127.0.0.1", 6379)]
+#         }
+#     }
+# }
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
