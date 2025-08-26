@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from django.db.utils import IntegrityError
 from rest_framework.exceptions import APIException
 from rest_framework.pagination import PageNumberPagination
-
+from django.dispatch import Signal
 
 class ProductRetreiveUpdateView(RetrieveUpdateAPIView):
     queryset = Product.objects.all()
@@ -19,6 +19,7 @@ class ProductRetreiveUpdateView(RetrieveUpdateAPIView):
         if self.request.method in ["PUT", "PATCH"]:
             return ProductCreateUpdateSerializer
         return ProductSerializer
+product_created = Signal()
 class ProductListCreateView(ListCreateAPIView):
     queryset = Product.objects.order_by("-product_initial_time").all()
     pagination_class = PageNumberPagination
@@ -26,10 +27,12 @@ class ProductListCreateView(ListCreateAPIView):
         post = serializer.save()
         for image in self.request.FILES.getlist("images"):
             Image.objects.create(post=post, image=image)
+        return post
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            self.perform_create(serializer)
+            post = self.perform_create(serializer)
+            product_created.send(sender=self.__class__, instance=post)
             return Response({
                 "success": True
             }, status=201)
