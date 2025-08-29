@@ -13,13 +13,15 @@ from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
 # from django.core.
 from dashboard import urls
-from channels.auth import AuthMiddlewareStack
+from dashboard.middlewares.tokens import TokenAuthMiddleware
+# from channels.auth import AuthMiddlewareStack
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Gofer_main.settings')
 
+
 application = ProtocolTypeRouter({
     "http":get_asgi_application(),
-    "websocket": AuthMiddlewareStack(
+    "websocket": TokenAuthMiddleware(
         URLRouter(urls.websocket_urlpatterns)
     )
 })

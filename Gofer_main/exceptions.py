@@ -4,8 +4,7 @@ from rest_framework import status
 from rest_framework_simplejwt.exceptions import InvalidToken
 from rest_framework.exceptions import APIException
 from django.core.exceptions import ValidationError, BadRequest, FieldDoesNotExist
-from utils.log import logger
-
+from channels.exceptions import DenyConnection
 
 def commonExceptions(exc, _):
 
@@ -45,10 +44,11 @@ def commonExceptions(exc, _):
             "info": "The field you requested does not exist"
         },status=400)
     
-    # else:
-    #     logger.critical(f"Unknown error occured {str(exc)}")
-    #     return Response({
-    #         "error": True, 
-    #         "info": ["Unknown error occured"],
-    #     })
+    else:
+        print(exc)
+        # logger.critical(f"Unknown error occured {str(exc)}")
+        return Response({
+            "error": True, 
+            "info": ["Unknown error occured"],
+        })
         

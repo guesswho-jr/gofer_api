@@ -60,7 +60,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'middleware.headers.AuthorizationHeaderCheck'
+    'middleware.headers.AuthorizationHeaderCheck',
+]
+
+ASYNC_MIDDLEWARES = [
+    "dashboard.middlewares.webSocketTokenCheck.TokenAuthMiddleware"
 ]
 
 ROOT_URLCONF = 'Gofer_main.urls'
@@ -146,8 +150,10 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(days=5), # change that s
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    "ACCESS_TOKEN_LIFETIME": timedelta(seconds=5), # change that s
+    'REFRESH_TOKEN_LIFETIME': timedelta(seconds=10),
+    # "ACCESS_TOKEN_LIFETIME": timedelta(seconds=10), # change that s
+    # 'REFRESH_TOKEN_LIFETIME': timedelta(days=5),
     'ROTATE_REFRESH_TOKENS': True
 }
 
