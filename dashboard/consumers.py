@@ -2,13 +2,11 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 
 class DataUpdateConsumer(AsyncWebsocketConsumer):
-    async def __call__(self, scope, receive, send):
-        # print(await receive())
-        return await super().__call__(scope, receive, send)
     async def connect(self):
-        print(self.scope)
-        if self.scope["ws_forbidden"]:
+        # print(self.scope)
+        if  "ws_forbidden" in self.scope.keys():
             await self.close(700)
+            # pass
         await self.channel_layer.group_add("data_updates", self.channel_name) # type: ignore
         await self.accept()
     async def disconnect(self, code): 

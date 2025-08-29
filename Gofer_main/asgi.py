@@ -22,6 +22,6 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Gofer_main.settings')
 application = ProtocolTypeRouter({
     "http":get_asgi_application(),
     "websocket": TokenAuthMiddleware(
-        URLRouter(urls.websocket_urlpatterns)
+         URLRouter(urls.websocket_urlpatterns)
     )
 })

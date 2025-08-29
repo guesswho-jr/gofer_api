@@ -9,11 +9,17 @@ class TokenAuthMiddleware(BaseMiddleware):
     async def __call__(self, scope, receive, send):
         headers: dict[bytes, bytes] = dict(scope["headers"])
         if not headers:
+            print("Forbidden in the headers")
             scope["ws_forbidden"] = True
             return await super().__call__(scope, receive, send)
-        raw_token: str = (headers.get(b"authorization")).decode() # type: ignore
+        raw_token = (headers.get(b"authorization")) # type: ignore
+        if raw_token is None:
+            scope["ws_forbidden"] = True
+            return await super().__call__(scope, receive, send)
+        raw_token = raw_token.decode() # type: ignore
         parts = raw_token.split(' ')
         if len(parts) != 2:
+            print("Forbidden in the split")
             scope["ws_forbidden"] = True
             return await super().__call__(scope, receive, send)
             # raise Http
@@ -22,9 +28,10 @@ class TokenAuthMiddleware(BaseMiddleware):
             token = AccessToken(raw_token) # type: ignore
             user = await User.objects.aget(pk=token["user_id"])
             if not user:
+                print("Forbidden in the user")
                 scope["ws_forbidden"] = True
-                return await super().__call__(scope, receive, send)
             return await super().__call__(scope, receive, send)
         except TokenError:
+            print("Forbidden in the token error")
             scope["ws_forbidden"] = True
             return await super().__call__(scope, receive, send)
