@@ -1,7 +1,7 @@
 from collections import defaultdict
 from django.http import Http404
 from rest_framework.response import Response
-from .serializer import ProductCreateUpdateSerializer, ProductListSerailizer, ProductReviewSerializer, ProductSerializer
+from .serializer import ProductCreateSerializer, ProductListSerailizer, ProductSerializer, ProductReviewSerializer, ProductUpdateSerializer
 from .models import Image, Product, Review, User
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateAPIView
 from Gofer_main.exceptions import ValidationError
@@ -10,14 +10,14 @@ from django.db.utils import IntegrityError
 from rest_framework.exceptions import APIException
 from rest_framework.pagination import PageNumberPagination
 from django.dispatch import Signal
-
+from Gofer_main.exceptions import BadRequest
 class ProductRetreiveUpdateView(RetrieveUpdateAPIView):
     queryset = Product.objects.all()
     lookup_field = 'id'
     pagination_class = PageNumberPagination
     def get_serializer_class(self): # type: ignore
         if self.request.method in ["PUT", "PATCH"]:
-            return ProductCreateUpdateSerializer
+            return ProductUpdateSerializer
         return ProductSerializer
 product_created = Signal()
 class ProductListCreateView(ListCreateAPIView):
@@ -36,10 +36,12 @@ class ProductListCreateView(ListCreateAPIView):
             return Response({
                 "success": True
             }, status=201)
+        else:
+            raise BadRequest()
     
     def get_serializer_class(self): # type: ignore
-        if self.request.method in ["POST", "PUT"]:
-            return ProductCreateUpdateSerializer
+        if self.request.method == "POST":
+            return ProductCreateSerializer
         return ProductListSerailizer
     def list(self, request, *args, **kwargs):
         grouped = defaultdict(list)

@@ -22,7 +22,7 @@ class ProductSerializer(ModelSerializer):
                   "product_images",
                   "dietaryTags",
                   "ingredients",
-                  "is_vegeterian",
+                  
                   "total_calories",
                   "review_count",
                   "tags",
@@ -43,13 +43,8 @@ class ProductListSerailizer(ModelSerializer):
                   "average_rating",
                   "id",
                   "product_images"]
-class ProductCreateUpdateSerializer(ModelSerializer):
-    vendor = serializers.CharField()
-    rating = serializers.IntegerField()
-    # images = serializers.ImageField()
-    class Meta:
-        model = Product
-        fields = ("product_name", 
+
+create_fields = ["product_name", 
                   "product_description",
                   "product_original_price",
                   "discount_amount",
@@ -57,20 +52,27 @@ class ProductCreateUpdateSerializer(ModelSerializer):
                 "category",
                   "dietaryTags",
                   "ingredients",
-                  "is_vegeterian",
+                  
                   "total_calories",
                   "review_count",
-                  "tags",
-                  "rating"
-                  )
+                  "tags"]
+class ProductCreateSerializer(ModelSerializer):
+    vendor = serializers.CharField()
+    
+    # images = serializers.ImageField()
+    class Meta:
+        model = Product
+        fields = create_fields
+                  
+
     def validate(self, attrs):
         if attrs["product_original_price"] <= attrs["discount_amount"]:
             raise ValidationError("Discount cannot be more than the price. Don't be that generous!")
         return attrs
     def create(self, validated_data: dict):
         username = validated_data.pop("vendor")
-        if "rating" in validated_data.keys():
-            validated_data.pop("rating")
+        # if "rating" in validated_data.keys():
+        #     validated_data.pop("rating")
         for field in ["tags", "ingredients", "dietaryTags"]:
             try:
                 if not isinstance(validated_data[field], list):
@@ -87,6 +89,11 @@ class ProductCreateUpdateSerializer(ModelSerializer):
             raise UnknownException(e)
         post = Product.objects.create(user=u, **validated_data)
         return post
+class ProductUpdateSerializer(ModelSerializer):
+    rating = serializers.IntegerField()
+    class Meta:
+        model = Product
+        fields = [*create_fields, "rating"]
     def update(self, instance: Product, validated_data: dict):
         username = validated_data.pop("vendor")
         ratingReceived = validated_data.pop("rating")

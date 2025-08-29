@@ -19,7 +19,6 @@ class Product(models.Model):
     discount_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal(0.00))
     tags = models.JSONField(null=True)
     total_calories = models.PositiveIntegerField(null=False, blank=False)
-    is_vegeterian = models.BooleanField()
     ingredients = models.JSONField()
     dietaryTags = models.JSONField()
     average_rating = models.DecimalField(decimal_places=2, max_digits=3, default=Decimal(0.00))
@@ -56,6 +55,12 @@ class Product(models.Model):
     def posted_at(self):
         # return naturaltime(self.product_initial_time)
         time = timesince(self.product_initial_time, depth=1) # type: ignore
+        time = time.replace('\xa0', ' ')
+        # print(time)
+        # print("0 min" in time)
+        if "0 min" in time:
+            print("HRE")
+            return "Just now"
         return time + " ago"
         
     @property
