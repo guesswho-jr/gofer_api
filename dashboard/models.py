@@ -14,7 +14,7 @@ class Product(models.Model):
     product_name = models.CharField(max_length=100)
     product_description = models.CharField(max_length=512)
     product_original_price = models.DecimalField(decimal_places=2, max_digits=12)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    uploaded_by = models.ForeignKey(User, on_delete=models.CASCADE)
     product_initial_time = models.DateTimeField(help_text=_("The time when the product is added to stock"), auto_now_add=True)
     discount_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal(0.00))
     tags = models.JSONField(null=True)
@@ -28,7 +28,7 @@ class Product(models.Model):
         return self.product_name
     @property
     def location(self):
-        return self.user.profile.provider.location  # type: ignore
+        return self.uploaded_by.profile.provider.location  # type: ignore
     
     @property
     def final_price(self):
@@ -41,16 +41,16 @@ class Product(models.Model):
         return True if self.product_original_price - self.discount_amount > 0 else False
     @property
     def vendor_image(self):
-        return self.user.profile.profile_picture.url # type: ignore
+        return self.uploaded_by.profile.profile_picture.url # type: ignore
     @property
     def vendor(self):
-        return self.user.username
+        return self.uploaded_by.username
     @property
     def is_provider(self):
-        return self.user.profile.is_provider  # type: ignore
+        return self.uploaded_by.profile.is_provider  # type: ignore
     @property
     def full_name(self):
-        return f"{self.user.first_name} {self.user.last_name}"
+        return f"{self.uploaded_by.first_name} {self.uploaded_by.last_name}"
     @property
     def posted_at(self):
         # return naturaltime(self.product_initial_time)

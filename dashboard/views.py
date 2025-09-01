@@ -1,6 +1,8 @@
 from collections import defaultdict
 from django.http import Http404
 from rest_framework.response import Response
+
+from Gofer_main.classes import GoferListCreateView
 from .serializer import ProductCreateSerializer, ProductListSerailizer, ProductSerializer, ProductReviewSerializer, ProductUpdateSerializer
 from .models import Image, Product, Review, User
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateAPIView
@@ -20,9 +22,8 @@ class ProductRetreiveUpdateView(RetrieveUpdateAPIView):
             return ProductUpdateSerializer
         return ProductSerializer
 product_created = Signal()
-class ProductListCreateView(ListCreateAPIView):
+class ProductListCreateView(GoferListCreateView):
     queryset = Product.objects.order_by("-product_initial_time").all()
-    pagination_class = PageNumberPagination
     def perform_create(self, serializer):
         post = serializer.save()
         for image in self.request.FILES.getlist("images"):
@@ -46,7 +47,8 @@ class ProductListCreateView(ListCreateAPIView):
     def list(self, request, *args, **kwargs):
         grouped = defaultdict(list)
         paginator = self.pagination_class()
-        page = paginator.paginate_queryset(self.queryset, request)
+        queryset = self.get_queryset()
+        page = paginator.paginate_queryset(queryset, request)
         serializer = self.get_serializer_class()
         if page is not None:
             for product in self.queryset.all():
