@@ -92,9 +92,8 @@ class ProductReview(APIView):
 
 class ProductSearchView(RetrieveAPIView):
     queryset = Product.objects.all()
-    lookup_fields = ["product_name", "uploaded_by__username"]
     serializer_class = ProductListSerailizer
-    def get_object(self):
+    def get_object(self): # type: ignore
         lookup = self.kwargs.get("product")
         data = self.queryset.filter(Q(product_name=lookup) | Q(uploaded_by__username=lookup) | Q(product_description__contains=lookup))
         return data
