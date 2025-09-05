@@ -87,7 +87,7 @@ class ProductCreateSerializer(ModelSerializer):
             raise ValidationError("The vendor you requested does not exist. ", "user_not_found")
         except Exception as e:
             raise UnknownException(e)
-        post = Product.objects.create(user=u, **validated_data)
+        post = Product.objects.create(uploaded_by=u, **validated_data)
         return post
 class ProductUpdateSerializer(ModelSerializer):
     rating = serializers.IntegerField()

@@ -22,5 +22,6 @@ class GoferListCreateView(generics.ListCreateAPIView):
             raise Exception("Queryset is not optional in here")
         
         data = self.queryset.filter(uploaded_by__in=follow_list).exclude(uploaded_by=user)
+        self.check_object_permissions(self.request, data)
         return data
     

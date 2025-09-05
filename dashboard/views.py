@@ -1,11 +1,11 @@
 from collections import defaultdict
 from django.http import Http404
 from rest_framework.response import Response
-
+from django.db.models import Q
 from Gofer_main.classes import GoferListCreateView
 from .serializer import ProductCreateSerializer, ProductListSerailizer, ProductSerializer, ProductReviewSerializer, ProductUpdateSerializer
 from .models import Image, Product, Review, User
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateAPIView
+from rest_framework.generics import RetrieveUpdateAPIView, RetrieveAPIView
 from Gofer_main.exceptions import ValidationError
 from rest_framework.views import APIView
 from django.db.utils import IntegrityError
@@ -46,10 +46,10 @@ class ProductListCreateView(GoferListCreateView):
         return ProductListSerailizer
     def list(self, request, *args, **kwargs):
         grouped = defaultdict(list)
-        paginator = self.pagination_class()
         queryset = self.get_queryset()
-        page = paginator.paginate_queryset(queryset, request)
         serializer = self.get_serializer_class()
+        paginator = self.pagination_class()
+        page = paginator.paginate_queryset(queryset, request)
         if page is not None:
             for product in self.queryset.all():
                 serialized = dict(serializer(product).data)
@@ -89,3 +89,18 @@ class ProductReview(APIView):
                 raise APIException("You can't review one product more than once", code="not_allowed")
             return Response({"success": True})
         return Response({"success": False})
+
+class ProductSearchView(RetrieveAPIView):
+    queryset = Product.objects.all()
+    lookup_fields = ["product_name", "uploaded_by__username"]
+    serializer_class = ProductListSerailizer
+    def get_object(self):
+        lookup = self.kwargs.get("product")
+        data = self.queryset.filter(Q(product_name=lookup) | Q(uploaded_by__username=lookup) | Q(product_description__contains=lookup))
+        return data
+    def retrieve(self, request, *args, **kwargs):
+        queryset = self.get_object()
+        page = self.paginate_queryset(queryset)
+        serializer = self.get_serializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
+       

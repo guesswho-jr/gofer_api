@@ -11,5 +11,5 @@ class DataUpdateConsumer(AsyncWebsocketConsumer):
         await self.accept()
     async def disconnect(self, code): 
         await self.channel_layer.group_discard("data_updates", self.channel_name) # type: ignore
-    async def send_update(self, event):
+    async def send_product_update(self, event):
         await self.send(json.dumps({"type": "product_updated", **event["data"]}))

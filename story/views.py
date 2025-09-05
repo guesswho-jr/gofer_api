@@ -30,6 +30,3 @@ class StoryRetrieveUpdateView(generics.RetrieveUpdateAPIView):
             return StoryCreateUpdateSerializer
         return StorySerializer
 
-# class StoryCreateView(generics.CreateAPIView):
-#     queryset = Story.objects.all()
-    
