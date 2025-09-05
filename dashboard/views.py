@@ -94,12 +94,17 @@ class ProductSearchView(RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductListSerailizer
     def get_object(self): # type: ignore
-        lookup = self.kwargs.get("product")
-        data = self.queryset.filter(Q(product_name=lookup) | Q(uploaded_by__username=lookup) | Q(product_description__contains=lookup))
+        lookup = self.kwargs.get("product").lower()
+        data = self.queryset.filter(
+            Q(product_name__icontains=lookup) | 
+            Q(uploaded_by__username__icontains=lookup) | 
+            Q(product_description__icontains=lookup) | 
+            Q(uploaded_by__first_name__icontains=lookup) | 
+            Q(uploaded_by__last_name__icontains=lookup)
+            )
         return data
     def retrieve(self, request, *args, **kwargs):
         queryset = self.get_object()
         page = self.paginate_queryset(queryset)
         serializer = self.get_serializer(page, many=True)
         return self.get_paginated_response(serializer.data)
-       
