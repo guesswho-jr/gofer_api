@@ -4,7 +4,6 @@ from rest_framework import status
 from rest_framework_simplejwt.exceptions import InvalidToken
 from rest_framework.exceptions import APIException
 from django.core.exceptions import ValidationError, BadRequest, FieldDoesNotExist
-from channels.exceptions import DenyConnection
 
 def commonExceptions(exc, _):
 
