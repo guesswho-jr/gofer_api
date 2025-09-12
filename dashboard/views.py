@@ -1,4 +1,5 @@
 from collections import defaultdict
+from typing import Any
 from django.http import Http404
 from rest_framework.response import Response
 from django.db.models import Q
@@ -112,7 +113,7 @@ class ProductSearchView(RetrieveAPIView):
 class ProductForUser(RetrieveAPIView, GoferBaseView):
     queryset = Product.objects.all()
     serializer_class = ProductListSerailizer
-    def get_object(self):
+    def get_object(self) -> Any:
         return self.queryset.filter(uploaded_by__username=self.kwargs["username"])
     def retrieve(self, request, *args, **kwargs):
         queryset = self.get_object()
