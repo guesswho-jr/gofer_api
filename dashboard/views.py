@@ -2,7 +2,7 @@ from collections import defaultdict
 from django.http import Http404
 from rest_framework.response import Response
 from django.db.models import Q
-from Gofer_main.classes import GoferListCreateView
+from Gofer_main.classes import GoferBaseView, GoferListCreateView
 from .serializer import ProductCreateSerializer, ProductListSerailizer, ProductSerializer, ProductReviewSerializer, ProductUpdateSerializer
 from .models import Image, Product, Review, User
 from rest_framework.generics import RetrieveUpdateAPIView, RetrieveAPIView
@@ -108,3 +108,15 @@ class ProductSearchView(RetrieveAPIView):
         page = self.paginate_queryset(queryset)
         serializer = self.get_serializer(page, many=True)
         return self.get_paginated_response(serializer.data)
+
+class ProductForUser(RetrieveAPIView, GoferBaseView):
+    queryset = Product.objects.all()
+    serializer_class = ProductListSerailizer
+    def get_object(self):
+        return self.queryset.filter(uploaded_by__username=self.kwargs["username"])
+    def retrieve(self, request, *args, **kwargs):
+        queryset = self.get_object()
+        page = self.paginate_queryset(queryset)
+        serializer = self.get_serializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
+    

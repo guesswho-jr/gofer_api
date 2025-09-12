@@ -47,7 +47,7 @@ class UserProfileDetailSerializer(serializers.ModelSerializer):
     # full_name = serializers.CharField()
     class Meta:
         model = UserProfile
-        fields = ('full_name', "profilePicture", "is_provider")
+        fields = ('full_name', "profilePicture", "is_provider" , "settings")
         
         # def get_full_name(self):
         #     return 'test'
