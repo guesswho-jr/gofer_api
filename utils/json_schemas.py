@@ -1,4 +1,7 @@
 
+from utils.validators import validate_json
+
+
 SETTINGS_SCHEMA = {
     "type": "object",
     "properties": {
@@ -9,7 +12,11 @@ SETTINGS_SCHEMA = {
     "additionalProperties": False
 }
 
-SETTINGS_DEFAULT = {
+def default_settings():
+    return {
     "isPushNotificationsEnabled": True,
     "areEmailUpdatesEnabled": True
 }
+    
+def validate_settings_schema(value):
+    return validate_json(SETTINGS_SCHEMA, value)

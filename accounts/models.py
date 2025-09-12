@@ -1,10 +1,15 @@
+import json
 from django.db import models
 from django.contrib.auth import get_user_model
+
+from utils.json_schemas import default_settings, validate_settings_schema
+
 
 User = get_user_model()
 class UserProfile(models.Model):
     user = models.OneToOneField(to=User, on_delete=models.CASCADE, related_name="profile")
     profile_picture = models.ImageField(upload_to="profilePictures/")
+    settings = models.JSONField(default=default_settings, validators=[validate_settings_schema])
     # follows = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name="follows",  blank=True)
     def __str__(self):
         return self.user.username
