@@ -82,25 +82,3 @@ class UserUpdateSerializer(serializers.ModelSerializer):
                 raise BadRequest("Location is required if you are a provider.")
         return attrs
         
-# class UserUpdateSerializer(serializers.Serializer):
-#     username = serializers.CharField(required=False)
-#     password = serializers.CharField(required=False)
-#     email = serializers.EmailField(required=False)
-#     first_name = serializers.CharField(required=False)
-#     last_name = serializers.CharField(required=False)
-#     cpassword = serializers.CharField(required=False)
-#     follows = serializers.JSONField(required=False, validators=[validate_follows_schema])
-#     # This is the end of the user
-#     user_type = serializers.CharField(required=False)
-#     location = serializers.JSONField(required=False)
-#     def update(self, instance, validated_data):
-#         profile_data = validated_data.pop("profile")
-#         for attr, value in validated_data.items():
-#             setattr(instance, attr, value)
-#         instance.save()
-#         if profile_data:
-#             profile = instance.profile
-#             for attr, value in profile_data.items():
-#                 setattr(profile, attr, value)
-#             profile.save()
-#         return instance
