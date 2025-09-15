@@ -7,5 +7,6 @@ import jsonschema
 def validate_json(schema: Dict[str, Any], toBeValidated: Dict[str, Any]):
     try:
         validate(toBeValidated, schema)
-    except jsonschema.ValidationError:
-        raise ValidationError(_("Invalid data"))
+    except jsonschema.ValidationError as e:
+        print(e)
+        raise ValidationError(_("Invalid data "))

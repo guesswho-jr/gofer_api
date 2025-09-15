@@ -1,9 +1,13 @@
+import json
+from typing import Dict
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 
 from accounts.models import User, UserProfile
 
-
+from django.core.exceptions import ValidationError
+from Gofer_main.exceptions import BadRequest
+from utils.json_schemas import validate_follows_schema, validate_location_schema
 
 class RegisterSerializer(serializers.Serializer):
     user_type = serializers.CharField()
@@ -13,7 +17,7 @@ class RegisterSerializer(serializers.Serializer):
     cpassword = serializers.CharField()
     first_name = serializers.CharField()
     last_name = serializers.CharField()
-    location = serializers.JSONField(required=False)
+    location = serializers.JSONField(required=False, validators=[validate_location_schema])
     # profile_picture = serializers.ImageField()
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
@@ -51,3 +55,52 @@ class UserProfileDetailSerializer(serializers.ModelSerializer):
         
         # def get_full_name(self):
         #     return 'test'
+
+class UserUpdateSerializer(serializers.ModelSerializer):
+    cpassword = serializers.CharField(required=False)
+    username = serializers.CharField(required=False)
+    password = serializers.CharField(required=False)
+    follows = serializers.JSONField(required=False, validators=[validate_follows_schema])
+    user_type = serializers.CharField(required=False)
+    location = serializers.JSONField(required=False, validators=[validate_location_schema])
+    class Meta:
+        model = User
+        fields = ("username", "password", "email", "first_name", "last_name", "cpassword", "follows", "user_type", "location")
+    
+    def validate(self, attrs):
+        if "password" in attrs.keys():
+            if not ("cpassword" in attrs.keys()):
+                raise BadRequest("Please input the password again for confirmation.")
+            if attrs["password"] != attrs["cpassword"]:
+                raise ValidationError("Passwords don't match")
+            attrs.pop("cpassword")
+        if "user_type" in attrs.keys():
+            user_type = attrs.get("user_type") 
+            if not user_type in ["provider", "user"]:
+                raise ValidationError("Not a valid data")
+            if "location" not in attrs.keys():
+                raise BadRequest("Location is required if you are a provider.")
+        return attrs
+        
+# class UserUpdateSerializer(serializers.Serializer):
+#     username = serializers.CharField(required=False)
+#     password = serializers.CharField(required=False)
+#     email = serializers.EmailField(required=False)
+#     first_name = serializers.CharField(required=False)
+#     last_name = serializers.CharField(required=False)
+#     cpassword = serializers.CharField(required=False)
+#     follows = serializers.JSONField(required=False, validators=[validate_follows_schema])
+#     # This is the end of the user
+#     user_type = serializers.CharField(required=False)
+#     location = serializers.JSONField(required=False)
+#     def update(self, instance, validated_data):
+#         profile_data = validated_data.pop("profile")
+#         for attr, value in validated_data.items():
+#             setattr(instance, attr, value)
+#         instance.save()
+#         if profile_data:
+#             profile = instance.profile
+#             for attr, value in profile_data.items():
+#                 setattr(profile, attr, value)
+#             profile.save()
+#         return instance
