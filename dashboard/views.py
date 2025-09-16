@@ -134,8 +134,3 @@ class ProductFilterByCategory(RetrieveAPIView, GoferBaseView):
         page = self.paginate_queryset(queryset)
         serializer = self.get_serializer(page, many=True)
         return self.get_paginated_response(serializer.data)
-
-@api_view(["GET"])
-def all_categories(request):
-    data = set(Product.objects.values_list("category", flat=True))
-    return Response(data)
