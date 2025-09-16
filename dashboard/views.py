@@ -7,6 +7,7 @@ from Gofer_main.classes import GoferBaseView, GoferListCreateView
 from .serializer import ProductCreateSerializer, ProductListSerailizer, ProductSerializer, ProductReviewSerializer, ProductUpdateSerializer
 from .models import Image, Product, Review, User
 from rest_framework.generics import RetrieveUpdateAPIView, RetrieveAPIView
+from rest_framework.decorators import api_view
 from Gofer_main.exceptions import ValidationError
 from rest_framework.views import APIView
 from django.db.utils import IntegrityError
@@ -101,7 +102,7 @@ class ProductSearchView(RetrieveAPIView):
             Q(uploaded_by__username__icontains=lookup) | 
             Q(product_description__icontains=lookup) | 
             Q(uploaded_by__first_name__icontains=lookup) | 
-            Q(uploaded_by__last_name__icontains=lookup)
+            Q(uploaded_by__last_name__icontains=lookup) 
             )
         return data
     def retrieve(self, request, *args, **kwargs):
@@ -120,4 +121,21 @@ class ProductForUser(RetrieveAPIView, GoferBaseView):
         page = self.paginate_queryset(queryset)
         serializer = self.get_serializer(page, many=True)
         return self.get_paginated_response(serializer.data)
-    
+
+class ProductFilterByCategory(RetrieveAPIView, GoferBaseView):
+    queryset = Product.objects.all()
+    serializer_class = ProductListSerailizer
+    lookup_field = "category"
+    def get_object(self) -> Any:
+        return self.queryset.filter(category=self.kwargs[self.lookup_field])
+    def retrieve(self, request, *args, **kwargs):
+        queryset = self.get_object()
+        # print(queryset)
+        page = self.paginate_queryset(queryset)
+        serializer = self.get_serializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
+
+@api_view(["GET"])
+def all_categories(request):
+    data = set(Product.objects.values_list("category", flat=True))
+    return Response(data)
