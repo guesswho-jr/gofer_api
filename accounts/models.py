@@ -2,7 +2,7 @@ import json
 from django.db import models
 from django.contrib.auth import get_user_model
 
-from utils.json_schemas import default_settings, validate_settings_schema
+from utils.json_schemas import default_settings, validate_location_schema, validate_settings_schema
 
 
 User = get_user_model()
@@ -25,7 +25,7 @@ class UserProfile(models.Model):
     
 class Provider(models.Model):
     user_profile = models.OneToOneField(to=UserProfile, on_delete=models.CASCADE, related_name="provider")
-    location = models.JSONField(null=True, blank=True)
+    location = models.JSONField(validators=[validate_location_schema])
     def __str__(self) -> str:
         return self.user_profile.user.username
 

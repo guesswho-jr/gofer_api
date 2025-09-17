@@ -122,13 +122,13 @@ class ProductFilterByCategory(RetrieveAPIView, GoferBaseView):
     def get_object(self) -> Any:
         category = self.kwargs[self.lookup_field]
         data = self.queryset.filter(category=category)
-        return list(filter(lambda x: x.is_provider, data))
+        return tuple(filter(lambda x: x.is_provider, data))
     def retrieve(self, request, *args, **kwargs):
         queryset = self.get_object()
         # print(queryset)
         page = self.paginate_queryset(queryset)
         if not page:
-            return Response()
+            return Response(status=404)
         serializer = self.get_serializer(page, many=True)
         
         return self.get_paginated_response(serializer.data)

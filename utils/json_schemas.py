@@ -28,8 +28,8 @@ LOCATION_SCHEMA = {
     "type": "object",
     "properties": {
          "name": {"type": "string"},
-         "latitude": {"type": "string"},
-         "longitude": {"type": "string"}
+         "latitude": {"type": "number"},
+         "longitude": {"type": "number"}
     },
     "required": ["name", "longitude", "latitude"],
     **BASIC_RULES
