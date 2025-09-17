@@ -1,4 +1,3 @@
-from collections import defaultdict
 from typing import Any
 from django.http import Http404
 from rest_framework.response import Response
@@ -47,12 +46,8 @@ class ProductListCreateView(GoferListCreateView):
             return ProductCreateSerializer
         return ProductListSerailizer
     def list(self, request, *args, **kwargs):
-        grouped = defaultdict(str)
         paginator = self.pagination_class()
-        for product in self.queryset.all():
-            if product.is_provider:
-                grouped[product.category] = f"/{product.category}"
-        result = [{"category": cat, "product_link": prods} for cat, prods in grouped.items()]
+        result = tuple(set(Product.objects.values_list("category", flat=True)))
         paginator.paginate_queryset(result, request)
         return paginator.get_paginated_response(result)
  
