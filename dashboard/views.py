@@ -47,20 +47,15 @@ class ProductListCreateView(GoferListCreateView):
             return ProductCreateSerializer
         return ProductListSerailizer
     def list(self, request, *args, **kwargs):
-        grouped = defaultdict(list)
-        queryset = self.get_queryset()
-        serializer = self.get_serializer_class()
+        grouped = defaultdict(str)
         paginator = self.pagination_class()
-        page = paginator.paginate_queryset(queryset, request)
-        if page is not None:
-            for product in self.queryset.all():
-                serialized = dict(serializer(product).data)
-                if product.is_provider:
-                    grouped[product.category].append(serialized)
-            result = [{"category": cat, "products": prods} for cat, prods in grouped.items()]
-            return paginator.get_paginated_response(result)
-        else:
-            raise APIException(code="fetch_error", detail="Cannot fetch data from database. ")
+        for product in self.queryset.all():
+            if product.is_provider:
+                grouped[product.category] = f"/{product.category}"
+        result = [{"category": cat, "product_link": prods} for cat, prods in grouped.items()]
+        paginator.paginate_queryset(result, request)
+        return paginator.get_paginated_response(result)
+ 
         # return super().list(request, *args, **kwargs)
 
 
@@ -127,7 +122,8 @@ class ProductFilterByCategory(RetrieveAPIView, GoferBaseView):
     serializer_class = ProductListSerailizer
     lookup_field = "category"
     def get_object(self) -> Any:
-        return self.queryset.filter(category=self.kwargs[self.lookup_field])
+        category = self.kwargs[self.lookup_field]
+        return self.queryset.filter(category=category)
     def retrieve(self, request, *args, **kwargs):
         queryset = self.get_object()
         # print(queryset)

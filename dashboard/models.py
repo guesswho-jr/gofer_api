@@ -11,13 +11,13 @@ User = get_user_model()
 
 class Product(models.Model):
     id = models.UUIDField(editable=False, unique=True, primary_key=True, default=uuid.uuid4)
-    product_name = models.CharField(max_length=100)
-    product_description = models.CharField(max_length=512)
+    product_name = models.CharField(max_length=100, db_index=True)
+    product_description = models.CharField(max_length=512, db_index=True)
     product_original_price = models.DecimalField(decimal_places=2, max_digits=12)
     uploaded_by = models.ForeignKey(User, on_delete=models.CASCADE)
     product_initial_time = models.DateTimeField(help_text=_("The time when the product is added to stock"), auto_now_add=True)
     discount_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal(0.00))
-    tags = models.JSONField(null=True)
+    tags = models.JSONField(null=True, db_index=True)
     total_calories = models.PositiveIntegerField(null=False, blank=False)
     ingredients = models.JSONField()
     dietaryTags = models.JSONField()
@@ -29,7 +29,6 @@ class Product(models.Model):
     @property
     def location(self):
         return self.uploaded_by.profile.provider.location  # type: ignore
-    
     @property
     def final_price(self):
         data = float(self.product_original_price - self.discount_amount)
