@@ -14,6 +14,9 @@ from rest_framework.exceptions import APIException
 from rest_framework.pagination import PageNumberPagination
 from django.dispatch import Signal
 from Gofer_main.exceptions import BadRequest
+
+
+
 class ProductRetreiveUpdateView(RetrieveUpdateAPIView):
     queryset = Product.objects.all()
     lookup_field = 'id'
@@ -118,10 +121,14 @@ class ProductFilterByCategory(RetrieveAPIView, GoferBaseView):
     lookup_field = "category"
     def get_object(self) -> Any:
         category = self.kwargs[self.lookup_field]
-        return self.queryset.filter(category=category)
+        data = self.queryset.filter(category=category)
+        return list(filter(lambda x: x.is_provider, data))
     def retrieve(self, request, *args, **kwargs):
         queryset = self.get_object()
         # print(queryset)
         page = self.paginate_queryset(queryset)
+        if not page:
+            return Response()
         serializer = self.get_serializer(page, many=True)
+        
         return self.get_paginated_response(serializer.data)
