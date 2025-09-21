@@ -20,7 +20,7 @@ from Gofer_main.exceptions import BadRequest
 class ProductRetreiveUpdateView(RetrieveUpdateAPIView):
     queryset = Product.objects.all()
     lookup_field = 'id'
-    pagination_class = PageNumberPagination
+    pagination_class = None
     def get_serializer_class(self): # type: ignore
         if self.request.method in ["PUT", "PATCH"]:
             return ProductUpdateSerializer
