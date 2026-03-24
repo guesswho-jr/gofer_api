@@ -1,8 +1,1 @@
-add an expiry date for access tokens
-Add a cron job to clean up stories every day
-make multiple images to be uploaded
-rating system - done
-Context for error handling - done
-I don't linke the cascade in dashboard models - done
-In the code pls make empty dashboard error handling
-Install channel_redis.
+
